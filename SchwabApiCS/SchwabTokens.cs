@@ -17,22 +17,22 @@ namespace SchwabApiCS
     {
         public const string baseUrl = "https://api.schwabapi.com/v1/oauth";
         public SchwabTokensData tokens;
-        private string tokenDataFileName;
-
+        //private string tokenDataFileName;
+        public string JsonTokens { get; set; } = string.Empty;
         /// <summary>
         /// Loads saved tokens info
         /// </summary>
         /// <param name="_tokenDataFileName">full path name of tokens file</param>
         /// <exception cref="SchwabApiException"></exception>
-        public SchwabTokens(string _tokenDataFileName)
+        public SchwabTokens(string jsonTokens)
         {
-            this.tokenDataFileName = _tokenDataFileName;
-            using (StreamReader sr = new StreamReader(tokenDataFileName))  // load saved tokens
+            //this.tokenDataFileName = _tokenDataFileName;
+            //using (StreamReader sr = new StreamReader(tokenDataFileName))  // load saved tokens
             {
-                var jsonTokens = sr.ReadToEnd();
+                //var jsonTokens = sr.ReadToEnd();
                 tokens = JsonConvert.DeserializeObject<SchwabTokensData>(jsonTokens);
 
-                if (tokens.AccessToken == "") // first time use, or to reset the tokens, set AccessToken to ""
+                if (string.IsNullOrEmpty(tokens.AccessToken)) // first time use, or to reset the tokens, set AccessToken to ""
                 { // this will cause reauthorization
                     tokens.AccessTokenExpires = DateTime.Now.AddDays(-1);
                     tokens.RefreshTokenExpires = DateTime.Now.AddDays(-1);
@@ -156,10 +156,11 @@ namespace SchwabApiCS
         /// </summary>
         public void SaveTokens()
         {
-            using (StreamWriter sw = new StreamWriter(tokenDataFileName, false))  // save tokens
+            //using (StreamWriter sw = new StreamWriter(tokenDataFileName, false))  // save tokens
             {
                 var jsonTokens = JsonConvert.SerializeObject(tokens, Formatting.Indented);
-                sw.WriteLine(jsonTokens);
+                this.JsonTokens = jsonTokens; // save to property for later use
+                //sw.WriteLine(jsonTokens);
             }
         }
 

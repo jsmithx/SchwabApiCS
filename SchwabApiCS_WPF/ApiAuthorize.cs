@@ -26,15 +26,17 @@ namespace SchwabApiCS_WPF
         /// Only need to call when SchwabTokens.NeedsReAuthorization is true.
         /// </summary>
         /// <param name="tokenDataFileName"></param>
-        public static void Open(string tokenDataFileName)
+        //public static void Open(string tokenDataFileName)
+        public static string Open(string jsonTokens)
         {
-            var win = new ApiAuthorizeWindow(tokenDataFileName);
+            var win = new ApiAuthorizeWindow(jsonTokens);
             win.ShowDialog(); // wait until window closes
+            return(win.schwabTokens.JsonTokens); // return the JSON tokens string
         }
 
         private class ApiAuthorizeWindow : Window
         {
-            private SchwabTokens schwabTokens;
+            public SchwabTokens schwabTokens;
             private WebView2 webView;
 
             public ApiAuthorizeWindow(string tokenDataFileName)
