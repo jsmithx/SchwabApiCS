@@ -1,4 +1,6 @@
-﻿// <copyright file="SchwabTokens.cs" company="ZPM Software Inc">
+﻿////////// Functions that are modified are marked with //###MODIFIED###\\ \\\\\\\\\\\\\\\
+
+// <copyright file="SchwabTokens.cs" company="ZPM Software Inc">
 // Copyright © 2024 ZPM Software Inc. All rights reserved.
 // This Source Code is subject to the terms MIT Public License
 // </copyright>
@@ -17,7 +19,8 @@ namespace SchwabApiCS
     {
         public const string baseUrl = "https://api.schwabapi.com/v1/oauth";
         public SchwabTokensData tokens;
-        private string tokenDataFileName;
+        //private string tokenDataFileName; //###MODIFIED###\\
+        public string JsonTokens { get; set; } = string.Empty; //###MODIFIED###\\
 
         /// <summary>
         /// Loads saved tokens info
@@ -25,14 +28,15 @@ namespace SchwabApiCS
         /// <param name="_tokenDataFileName">full path name of tokens file</param>
         /// <param name="_reAuthorizeOnWeekends ">if true, set expiration date to saturday or sunday</param>  
         /// <exception cref="SchwabApiException"></exception>
-        public SchwabTokens(string _tokenDataFileName, bool _reAuthorizeOnWeekends = false)
+        //public SchwabTokens(string _tokenDataFileName, bool _reAuthorizeOnWeekends = false) //###MODIFIED###\\
+        public SchwabTokens(string jsonTokens, bool _reAuthorizeOnWeekends = false) //###MODIFIED###\\
         {
-            tokenDataFileName = _tokenDataFileName;
+            //tokenDataFileName = _tokenDataFileName; //###MODIFIED###\\
             ReAuthorizeOnWeekends = _reAuthorizeOnWeekends;
 
-            using (StreamReader sr = new StreamReader(tokenDataFileName))  // load saved tokens
+            //using (StreamReader sr = new StreamReader(tokenDataFileName))  // load saved tokens //###MODIFIED###\\
             {
-                var jsonTokens = sr.ReadToEnd();
+                //var jsonTokens = sr.ReadToEnd(); //###MODIFIED###\\
                 tokens = JsonConvert.DeserializeObject<SchwabTokensData>(jsonTokens);
 
                 if (tokens.AccessToken == "") // first time use, or to reset the tokens, set AccessToken to ""
@@ -171,10 +175,11 @@ namespace SchwabApiCS
         /// </summary>
         public void SaveTokens()
         {
-            using (StreamWriter sw = new StreamWriter(tokenDataFileName, false))  // save tokens
+            //using (StreamWriter sw = new StreamWriter(tokenDataFileName, false))  // save tokens //###MODIFIED###\\
             {
                 var jsonTokens = JsonConvert.SerializeObject(tokens, Formatting.Indented);
-                sw.WriteLine(jsonTokens);
+                this.JsonTokens = jsonTokens; // save to property for later use //###MODIFIED###\\
+                //sw.WriteLine(jsonTokens); //###MODIFIED###\\
             }
         }
 
@@ -207,4 +212,3 @@ namespace SchwabApiCS
         }
     }
 }
-
